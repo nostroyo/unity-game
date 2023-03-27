@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class Player : MonoBehaviour
 {
@@ -12,6 +13,12 @@ public class Player : MonoBehaviour
     [SerializeField] int moveSpeed;
 
     public string transitionName;
+
+    private Vector3 bottomLeftEdge;
+    private Vector3 topRightEdge;
+
+
+
 
 
     // Start is called before the first frame update
@@ -28,6 +35,7 @@ public class Player : MonoBehaviour
 
         
         DontDestroyOnLoad(gameObject);
+
     }
 
     // Update is called once per frame
@@ -47,5 +55,18 @@ public class Player : MonoBehaviour
             playerAnimator.SetFloat("lastX", horizontalMovement);
             playerAnimator.SetFloat("lastY", verticalMovment);
         }
+
+        transform.position = new Vector3(
+            Mathf.Clamp(transform.position.x, bottomLeftEdge.x, topRightEdge.x),
+            Mathf.Clamp(transform.position.y, bottomLeftEdge.y, topRightEdge.y),
+            Mathf.Clamp(transform.position.z, bottomLeftEdge.z, topRightEdge.z)
+            );
+
+    }
+
+    public void SetLevelLimit(Vector3 top, Vector3 bottom)
+    {
+        bottomLeftEdge = bottom;
+        topRightEdge = top;
     }
 }
