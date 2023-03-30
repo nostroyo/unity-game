@@ -16,6 +16,7 @@ public class Player : MonoBehaviour
 
     private Vector3 bottomLeftEdge;
     private Vector3 topRightEdge;
+    public bool deactivateMovement;
 
 
 
@@ -41,27 +42,29 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float horizontalMovement = Input.GetAxisRaw("Horizontal");
-
-        float verticalMovment = Input.GetAxisRaw("Vertical");
-
-        playerRigidBody.velocity = new Vector2(horizontalMovement, verticalMovment) * moveSpeed;
-
-        playerAnimator.SetFloat("movmentX", playerRigidBody.velocity.x);
-        playerAnimator.SetFloat("movmentY", playerRigidBody.velocity.y);
-
-        if (horizontalMovement == 1 || horizontalMovement == -1 || verticalMovment == 1 || verticalMovment == -1)
+        if (!deactivateMovement)
         {
-            playerAnimator.SetFloat("lastX", horizontalMovement);
-            playerAnimator.SetFloat("lastY", verticalMovment);
+
+            float horizontalMovement = Input.GetAxisRaw("Horizontal");
+            float verticalMovment = Input.GetAxisRaw("Vertical");
+
+            playerRigidBody.velocity = new Vector2(horizontalMovement, verticalMovment) * moveSpeed;
+
+            playerAnimator.SetFloat("movmentX", playerRigidBody.velocity.x);
+            playerAnimator.SetFloat("movmentY", playerRigidBody.velocity.y);
+
+            if (horizontalMovement == 1 || horizontalMovement == -1 || verticalMovment == 1 || verticalMovment == -1)
+            {
+                playerAnimator.SetFloat("lastX", horizontalMovement);
+                playerAnimator.SetFloat("lastY", verticalMovment);
+            }
+
+            transform.position = new Vector3(
+                Mathf.Clamp(transform.position.x, bottomLeftEdge.x, topRightEdge.x),
+                Mathf.Clamp(transform.position.y, bottomLeftEdge.y, topRightEdge.y),
+                Mathf.Clamp(transform.position.z, bottomLeftEdge.z, topRightEdge.z)
+                );
         }
-
-        transform.position = new Vector3(
-            Mathf.Clamp(transform.position.x, bottomLeftEdge.x, topRightEdge.x),
-            Mathf.Clamp(transform.position.y, bottomLeftEdge.y, topRightEdge.y),
-            Mathf.Clamp(transform.position.z, bottomLeftEdge.z, topRightEdge.z)
-            );
-
     }
 
     public void SetLevelLimit(Vector3 top, Vector3 bottom)
